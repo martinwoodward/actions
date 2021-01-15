@@ -1,0 +1,10 @@
+name: Issue-Comment
+
+on: issue_comment
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "The comment was: $(jq --raw-output .comment.body '${{ github.event_path }}')"
