@@ -1,0 +1,10 @@
+name: Wiki Page Changed
+
+on: gollum
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "The page updated was: $(jq --raw-output .pages[0].html_url '${{ github.event_path }}')"
