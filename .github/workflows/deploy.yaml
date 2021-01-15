@@ -1,0 +1,66 @@
+name: Deploy
+on:
+  release:
+    types: [published]
+      
+jobs:
+  build:
+    name: Minify & Bundle
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo git clone; sleep 2
+      name: Checkout repository
+    - run: echo Minify JS; sleep 3
+      name: Minify JS
+    - run: echo Minify CSS; sleep 2
+      name: Minify CSS
+    - run: echo Compress Images; sleep 3
+      name: Compress Images
+    - run: echo Bundle; sleep 1
+      name: Bundle
+    
+  docs:
+    name: Generate Docs
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo Compress Images; sleep 3
+      name: Compress Images
+
+  a_dep:
+    name: Deploy to staging
+    runs-on: ubuntu-latest
+    environment: 
+      name: staging-myoctocat.dev
+      url: https://staging.myoctocat.dev
+    needs: [build, docs]
+    steps:
+    - run: echo Setup environment; sleep 1
+      name: Setup environment
+    - run: echo Updating DB Schema; sleep 1
+      name: Update DB Schema
+    - run: echo Deploying server tier; sleep 1
+      name: Deploying server tier
+    - run: echo Deploying web tier; sleep 1
+      name: Deploying web tier
+    - run: echo Switch slot
+      name: Switch load balancer
+
+  deploy_to_production:
+    name: Deploy to prod
+    runs-on: ubuntu-latest
+    environment: 
+      name: prod-myoctocat.dev
+      url: https://myoctocat.dev
+    needs: [a_dep]
+    steps:
+    - run: echo Setup environment; sleep 1
+      name: Setup environment
+    - run: echo Updating DB Schema; sleep 1
+      name: Update DB Schema
+    - run: echo Deploying server tier; sleep 1
+      name: Deploying server tier
+    - run: echo Deploying web tier; sleep 1
+      name: Deploying web tier
+    - run: echo Switch slot
+      name: Switch load balancer
+      
