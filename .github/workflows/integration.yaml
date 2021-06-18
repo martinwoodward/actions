@@ -1,0 +1,83 @@
+name: Integration Tests
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+      
+jobs:
+  build:
+    name: Minify & Bundle
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo git clone; sleep 2
+      name: Checkout repository
+    - run: echo Minify JS; sleep 3
+      name: Minify JS
+    - run: echo Minify CSS; sleep 2
+      name: Minify CSS
+    - run: echo Compress Images; sleep 3
+      name: Compress Images
+    - run: echo Bundle; sleep 1
+      name: Bundle
+    
+  docs:
+    name: Generate Docs
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo Compress Images; sleep 3
+      name: Compress Images
+
+  dev_dep:
+    name: Deploy to dev/test
+    runs-on: ubuntu-latest
+    needs: [build, docs]
+    steps:
+    - run: echo Setup environment; sleep 1
+      name: Setup environment
+    - run: echo Updating DB Schema; sleep 1
+      name: Update DB Schema
+    - run: echo Deploying server tier; sleep 1
+      name: Deploying server tier
+    - run: echo Deploying web tier; sleep 1
+      name: Deploying web tier
+    - run: echo Switch slot
+      name: Switch load balancer
+
+  int_test:
+    name: Run integration tests
+    runs-on: ubuntu-latest
+    environment: 
+      name: int-githubskyline.com
+      url: https://int.githubskyline.com
+    needs: [dev_dep]
+    steps:
+    - run: echo Setup environment; sleep 1
+      name: Setup environment
+    - run: echo Updating DB Schema; sleep 1
+      name: Update DB Schema
+    - run: echo Deploying server tier; sleep 1
+      name: Deploying server tier
+    - run: echo Deploying web tier; sleep 1
+      name: Deploying web tier
+    - run: echo Switch slot
+      name: Switch load balancer
+
+  deploy_to_production:
+    name: Deploy to prod
+    runs-on: ubuntu-latest
+    environment: 
+      name: prod-githubskyline.com
+      url: https://skyline.github.com
+    needs: [int_test]
+    steps:
+    - run: echo Setup environment; sleep 1
+      name: Setup environment
+    - run: echo Updating DB Schema; sleep 1
+      name: Update DB Schema
+    - run: echo Deploying server tier; sleep 1
+      name: Deploying server tier
+    - run: echo Deploying web tier; sleep 1
+      name: Deploying web tier
+    - run: echo Switch slot
+      name: Switch load balancer
+      
