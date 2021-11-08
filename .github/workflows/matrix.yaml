@@ -6,13 +6,14 @@ on:
     
 jobs:    
   build:
-    runs-on: ubuntu-latest
-
     strategy:    
       matrix:
         cc: [gcc, clang]
         curl: [openssl, gnutls, nss]
         kerberos: [libkrb5, heimdal]
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
     - name: Install dependencies
